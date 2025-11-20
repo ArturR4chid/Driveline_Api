@@ -8,7 +8,8 @@ A api **DriveLine_Api ** é uma API RESTful que permite o gerenciamento completo
 
 - **Empresas** - Cadastro e gestão de empresas
 - **Usuários** - Control de usuários com sistema de autenticação
-- **Veículos** - Registro e associação de veículos às empresas
+- **Veículos** - Registro e associação de veículos às empresa
+
 
 ##  Arquitetura
 
