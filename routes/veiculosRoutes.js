@@ -1,5 +1,5 @@
 const express = require('express');
-const VeiculoController = require('../controllers/VeiculoController');
+const VeiculoController = require('../controllers/veiculosController');
 const router = express.Router();
 
 class VeiculoRoutes {

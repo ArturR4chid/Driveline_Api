@@ -1,5 +1,5 @@
 const express = require('express');
-const EmpresaController = require('../controllers/EmpresaController');
+const EmpresaController = require('../controllers/empresasController');
 const router = express.Router();
 
 class EmpresaRoutes {
