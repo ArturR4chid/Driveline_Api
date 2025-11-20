@@ -1,0 +1,15 @@
+{
+  "name": "driveline_api",
+  "version": "1.0.0",
+  "description": "API Node.js + Express + MySQL para o projeto Driveline",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql2": "^3.3.0",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2"
+  }
+}

@@ -1,0 +1,6 @@
+const db = require('../config/db');
+exports.getAll = (req, res) => { db.query('SELECT * FROM veiculos', (err, results) => { if (err) return res.status(500).send(err); res.json(results); }); };
+exports.getById = (req, res) => { const { id } = req.params; db.query('SELECT * FROM veiculos WHERE id = ?', [id], (err, results) => { if (err) return res.status(500).send(err); res.json(results[0]); }); };
+exports.create = (req, res) => { const { modelo, placa, empresa_id } = req.body; db.query('INSERT INTO veiculos (modelo, placa, empresa_id) VALUES (?, ?, ?)', [modelo, placa, empresa_id], (err, result) => { if (err) return res.status(500).send(err); res.json({ message: 'Veículo criado com sucesso!', id: result.insertId }); }); };
+exports.update = (req, res) => { const { id } = req.params; const { modelo, placa, empresa_id } = req.body; db.query('UPDATE veiculos SET modelo=?, placa=?, empresa_id=? WHERE id=?', [modelo, placa, empresa_id, id], (err) => { if (err) return res.status(500).send(err); res.json({ message: 'Veículo atualizado com sucesso!' }); }); };
+exports.delete = (req, res) => { const { id } = req.params; db.query('DELETE FROM veiculos WHERE id=?', [id], (err) => { if (err) return res.status(500).send(err); res.json({ message: 'Veículo deletado com sucesso!' }); }); };
