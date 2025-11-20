@@ -7,7 +7,7 @@ API para gerenciamento de empresas, usuários e veículos desenvolvida em Node.j
 A api **DriveLine_Api ** é uma API RESTful que permite o gerenciamento completo de:
 
 - **Empresas** - Cadastro e gestão de empresas
-- **Usuários** - Controle de usuários com sistema de autenticação
+- **Usuários** - Control de usuários com sistema de autenticação
 - **Veículos** - Registro e associação de veículos às empresas
 
 ##  Arquitetura
