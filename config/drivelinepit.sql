@@ -1,0 +1,46 @@
+CREATE DATABASE IF NOT EXISTS drivelinepit;
+USE drivelinepit;
+
+CREATE TABLE empresas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome_fantasia VARCHAR(255),
+    razao_social VARCHAR(255) NOT NULL,
+    cnpj VARCHAR(18) UNIQUE NOT NULL,
+    email VARCHAR(255),
+    telefone VARCHAR(20),
+    rua VARCHAR(255),
+    numero VARCHAR(10),
+    bairro VARCHAR(100),
+    cidade VARCHAR(100),
+    estado VARCHAR(2),
+    cep VARCHAR(9),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    senha VARCHAR(255) NOT NULL,
+    telefone VARCHAR(20),
+    tipo ENUM('admin', 'usuario', 'motorista') DEFAULT 'usuario',
+    empresa_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE SET NULL
+);
+
+
+CREATE TABLE veiculos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    marca VARCHAR(100) NOT NULL,
+    modelo VARCHAR(100) NOT NULL,
+    ano INT NOT NULL,
+    placa VARCHAR(10) UNIQUE NOT NULL,
+    quilometragem DECIMAL(10,2) DEFAULT 0,
+    proprietario_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (proprietario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);

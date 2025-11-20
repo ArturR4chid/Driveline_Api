@@ -1,20 +1,45 @@
 const express = require('express');
 const cors = require('cors');
 const db = require('./db');
-const usuarioRoutes = require('./routes/UsuarioRoutes');
-const empresaRoutes = require('./routes/EmpresaRoutes');
-const veiculoRoutes = require('./routes/VeiculoRoutes');
 
-const app = express();
-app.use(express.json());
-app.use(cors());
+class App {
+    constructor() {
+        this.app = express();
+        this.port = 3000;
+        this.initMiddlewares();
+        this.initRoutes();
+        this.initDatabase();
+    }
 
-app.use('/usuarios', usuarioRoutes);
-app.use('/empresas', empresaRoutes);
-app.use('/veiculos', veiculoRoutes);
+    initMiddlewares() {
+        this.app.use(express.json());
+        this.app.use(cors());
+    }
 
-db.sync().then(() => {
-  app.listen(3000, () => {
-    console.log('Servidor rodando em http://localhost:3000');
-  });
-});
+    initRoutes() {
+        const usuarioRoutes = require('./routes/UsuarioRoutes');
+        const empresaRoutes = require('./routes/EmpresaRoutes');
+        const veiculoRoutes = require('./routes/VeiculoRoutes');
+
+        this.app.use('/usuarios', usuarioRoutes);
+        this.app.use('/empresas', empresaRoutes);
+        this.app.use('/veiculos', veiculoRoutes);
+    }
+
+    async initDatabase() {
+        try {
+            await db.sync();
+            this.startServer();
+        } catch (error) {
+            console.error('erro ao sincronizar banco:', error);
+        }
+    }
+
+    startServer() {
+        this.app.listen(this.port, () => {
+            console.log(`servidor rodando em http://localhost:${this.port}`);
+        });
+    }
+}
+
+module.exports = new App().app;
