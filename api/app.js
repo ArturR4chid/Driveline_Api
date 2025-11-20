@@ -2,6 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const db = require('./db');
 
+// Importei as models para garantir a sincronização
+require('./models/Empresa');
+require('./models/usuario');
+require('./models/Veiculo');
+
 class App {
     constructor() {
         this.app = express();
@@ -28,16 +33,17 @@ class App {
 
     async initDatabase() {
         try {
-            await db.sync();
+            await db.sync({ force: false }); // prof coloquei o force false pra nn dropar tabelas
+            console.log(' Banco sincronizado!');
             this.startServer();
         } catch (error) {
-            console.error('erro ao sincronizar banco:', error);
+            console.error(' Erro ao sincronizar banco:', error);
         }
     }
 
     startServer() {
         this.app.listen(this.port, () => {
-            console.log(`servidor rodando em http://localhost:${this.port}`);
+            console.log(` Servidor rodando em http://localhost:${this.port}`);
         });
     }
 }

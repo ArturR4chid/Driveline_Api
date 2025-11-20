@@ -1,10 +1,10 @@
-const db = require('../config/db');
+const Usuario = require('../api/models/usuario');
 
 class UsuarioController {
     async getAll(req, res) {
         try {
-            const [results] = await db.query('SELECT * FROM usuarios');
-            res.json(results);
+            const usuarios = await Usuario.findAll();
+            res.json(usuarios);
         } catch (err) {
             res.status(500).send(err.message);
         }
@@ -13,8 +13,12 @@ class UsuarioController {
     async getById(req, res) {
         try {
             const { id } = req.params;
-            const [results] = await db.query('SELECT * FROM usuarios WHERE id = ?', [id]);
-            res.json(results[0] || {});
+            const usuario = await Usuario.findByPk(id);
+            if (usuario) {
+                res.json(usuario);
+            } else {
+                res.status(404).json({ message: 'Usuário não encontrado' });
+            }
         } catch (err) {
             res.status(500).send(err.message);
         }
@@ -23,11 +27,8 @@ class UsuarioController {
     async create(req, res) {
         try {
             const { nome, email, senha } = req.body;
-            const [result] = await db.query(
-                'INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)',
-                [nome, email, senha]
-            );
-            res.json({ message: 'Usuário criado com sucesso!', id: result.insertId });
+            const novoUsuario = await Usuario.create({ nome, email, senha });
+            res.json({ message: 'Usuário criado com sucesso!', usuario: novoUsuario });
         } catch (err) {
             res.status(500).send(err.message);
         }
@@ -37,11 +38,14 @@ class UsuarioController {
         try {
             const { id } = req.params;
             const { nome, email, senha } = req.body;
-            await db.query(
-                'UPDATE usuarios SET nome=?, email=?, senha=? WHERE id=?',
-                [nome, email, senha, id]
-            );
-            res.json({ message: 'Usuário atualizado com sucesso!' });
+            
+            const usuario = await Usuario.findByPk(id);
+            if (!usuario) {
+                return res.status(404).json({ message: 'Usuário não encontrado' });
+            }
+
+            await usuario.update({ nome, email, senha });
+            res.json({ message: 'Usuário atualizado com sucesso!', usuario });
         } catch (err) {
             res.status(500).send(err.message);
         }
@@ -50,7 +54,13 @@ class UsuarioController {
     async delete(req, res) {
         try {
             const { id } = req.params;
-            await db.query('DELETE FROM usuarios WHERE id=?', [id]);
+            const usuario = await Usuario.findByPk(id);
+            
+            if (!usuario) {
+                return res.status(404).json({ message: 'Usuário não encontrado' });
+            }
+
+            await usuario.destroy();
             res.json({ message: 'Usuário deletado com sucesso!' });
         } catch (err) {
             res.status(500).send(err.message);
@@ -60,13 +70,10 @@ class UsuarioController {
     async login(req, res) {
         try {
             const { email, senha } = req.body;
-            const [results] = await db.query(
-                'SELECT * FROM usuarios WHERE email=? AND senha=?',
-                [email, senha]
-            );
+            const usuario = await Usuario.findOne({ where: { email, senha } });
             
-            if (results.length > 0) {
-                res.json({ message: 'Login bem-sucedido', usuario: results[0] });
+            if (usuario) {
+                res.json({ message: 'Login bem-sucedido', usuario });
             } else {
                 res.status(401).json({ message: 'Credenciais inválidas' });
             }

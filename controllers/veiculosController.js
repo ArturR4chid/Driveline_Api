@@ -1,10 +1,12 @@
-const db = require('../config/db');
+const Veiculo = require('../api/models/Veiculo');
 
 class VeiculoController {
     async getAll(req, res) {
         try {
-            const [results] = await db.query('SELECT * FROM veiculos');
-            res.json(results);
+            const veiculos = await Veiculo.findAll({
+                include: ['Empresa'] 
+            });
+            res.json(veiculos);
         } catch (err) {
             res.status(500).send(err.message);
         }
@@ -13,8 +15,14 @@ class VeiculoController {
     async getById(req, res) {
         try {
             const { id } = req.params;
-            const [results] = await db.query('SELECT * FROM veiculos WHERE id = ?', [id]);
-            res.json(results[0] || {});
+            const veiculo = await Veiculo.findByPk(id, {
+                include: ['Empresa']
+            });
+            if (veiculo) {
+                res.json(veiculo);
+            } else {
+                res.status(404).json({ message: 'Veículo não encontrado' });
+            }
         } catch (err) {
             res.status(500).send(err.message);
         }
@@ -23,11 +31,8 @@ class VeiculoController {
     async create(req, res) {
         try {
             const { modelo, placa, empresa_id } = req.body;
-            const [result] = await db.query(
-                'INSERT INTO veiculos (modelo, placa, empresa_id) VALUES (?, ?, ?)',
-                [modelo, placa, empresa_id]
-            );
-            res.json({ message: 'Veículo criado com sucesso!', id: result.insertId });
+            const novoVeiculo = await Veiculo.create({ modelo, placa, empresa_id });
+            res.json({ message: 'Veículo criado com sucesso!', veiculo: novoVeiculo });
         } catch (err) {
             res.status(500).send(err.message);
         }
@@ -37,11 +42,14 @@ class VeiculoController {
         try {
             const { id } = req.params;
             const { modelo, placa, empresa_id } = req.body;
-            await db.query(
-                'UPDATE veiculos SET modelo=?, placa=?, empresa_id=? WHERE id=?',
-                [modelo, placa, empresa_id, id]
-            );
-            res.json({ message: 'Veículo atualizado com sucesso!' });
+            
+            const veiculo = await Veiculo.findByPk(id);
+            if (!veiculo) {
+                return res.status(404).json({ message: 'Veículo não encontrado' });
+            }
+
+            await veiculo.update({ modelo, placa, empresa_id });
+            res.json({ message: 'Veículo atualizado com sucesso!', veiculo });
         } catch (err) {
             res.status(500).send(err.message);
         }
@@ -50,7 +58,13 @@ class VeiculoController {
     async delete(req, res) {
         try {
             const { id } = req.params;
-            await db.query('DELETE FROM veiculos WHERE id=?', [id]);
+            const veiculo = await Veiculo.findByPk(id);
+            
+            if (!veiculo) {
+                return res.status(404).json({ message: 'Veículo não encontrado' });
+            }
+
+            await veiculo.destroy();
             res.json({ message: 'Veículo deletado com sucesso!' });
         } catch (err) {
             res.status(500).send(err.message);

@@ -1,10 +1,10 @@
-const db = require('../config/db');
+const Empresa = require('../api/models/Empresa');
 
 class EmpresaController {
     async getAll(req, res) {
         try {
-            const [results] = await db.query('SELECT * FROM empresas');
-            res.json(results);
+            const empresas = await Empresa.findAll();
+            res.json(empresas);
         } catch (err) {
             res.status(500).send(err.message);
         }
@@ -13,8 +13,12 @@ class EmpresaController {
     async getById(req, res) {
         try {
             const { id } = req.params;
-            const [results] = await db.query('SELECT * FROM empresas WHERE id = ?', [id]);
-            res.json(results[0] || {});
+            const empresa = await Empresa.findByPk(id);
+            if (empresa) {
+                res.json(empresa);
+            } else {
+                res.status(404).json({ message: 'Empresa não encontrada' });
+            }
         } catch (err) {
             res.status(500).send(err.message);
         }
@@ -23,11 +27,8 @@ class EmpresaController {
     async create(req, res) {
         try {
             const { nome, cnpj, endereco } = req.body;
-            const [result] = await db.query(
-                'INSERT INTO empresas (nome, cnpj, endereco) VALUES (?, ?, ?)',
-                [nome, cnpj, endereco]
-            );
-            res.json({ message: 'Empresa criada com sucesso!', id: result.insertId });
+            const novaEmpresa = await Empresa.create({ nome, cnpj, endereco });
+            res.json({ message: 'Empresa criada com sucesso!', empresa: novaEmpresa });
         } catch (err) {
             res.status(500).send(err.message);
         }
@@ -37,11 +38,14 @@ class EmpresaController {
         try {
             const { id } = req.params;
             const { nome, cnpj, endereco } = req.body;
-            await db.query(
-                'UPDATE empresas SET nome=?, cnpj=?, endereco=? WHERE id=?',
-                [nome, cnpj, endereco, id]
-            );
-            res.json({ message: 'Empresa atualizada com sucesso!' });
+            
+            const empresa = await Empresa.findByPk(id);
+            if (!empresa) {
+                return res.status(404).json({ message: 'Empresa não encontrada' });
+            }
+
+            await empresa.update({ nome, cnpj, endereco });
+            res.json({ message: 'Empresa atualizada com sucesso!', empresa });
         } catch (err) {
             res.status(500).send(err.message);
         }
@@ -50,7 +54,13 @@ class EmpresaController {
     async delete(req, res) {
         try {
             const { id } = req.params;
-            await db.query('DELETE FROM empresas WHERE id=?', [id]);
+            const empresa = await Empresa.findByPk(id);
+            
+            if (!empresa) {
+                return res.status(404).json({ message: 'Empresa não encontrada' });
+            }
+
+            await empresa.destroy();
             res.json({ message: 'Empresa deletada com sucesso!' });
         } catch (err) {
             res.status(500).send(err.message);

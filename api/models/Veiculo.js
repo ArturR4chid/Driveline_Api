@@ -17,7 +17,10 @@ class Veiculo {
             empresa_id: { type: DataTypes.INTEGER, allowNull: false }
         });
 
-        model.belongsTo(Empresa.getModel(), { foreignKey: 'empresa_id' });
+        model.belongsTo(Empresa.getModel(), { 
+            foreignKey: 'empresa_id',
+            as: 'Empresa'
+        });
         return model;
     }
 
@@ -25,8 +28,16 @@ class Veiculo {
         return this.model || (this.model = this.initModel());
     }
 
-    static async findAll() {
-        return await this.getModel().findAll();
+    static async findAll(options = {}) {
+        return await this.getModel().findAll(options);
+    }
+
+    static async findByPk(id, options = {}) {
+        return await this.getModel().findByPk(id, options);
+    }
+
+    static async findOne(where) {
+        return await this.getModel().findOne({ where });
     }
 
     static async create(data) {
