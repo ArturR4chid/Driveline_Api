@@ -4,7 +4,7 @@ const db = require('./db');
 
 // Importei as models para garantir a sincronização
 require('./models/Empresa');
-require('./models/usuario');
+require('./models/Usuario');
 require('./models/Veiculo');
 
 class App {
