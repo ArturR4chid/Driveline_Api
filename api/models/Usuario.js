@@ -14,6 +14,10 @@ class Usuario {
             nome: { type: DataTypes.STRING, allowNull: false },
             email: { type: DataTypes.STRING, allowNull: false, unique: true },
             senha: { type: DataTypes.STRING, allowNull: false }
+        }, {
+            tableName: 'usuarios',
+            createdAt: 'created_at',
+            updatedAt: 'updated_at'
         });
     }
 
