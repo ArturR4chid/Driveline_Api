@@ -1,4 +1,4 @@
-const Usuario = require('../api/models/usuario');
+const Usuario = require('../api/models/Usuario');
 
 class UsuarioController {
     async getAll(req, res) {
