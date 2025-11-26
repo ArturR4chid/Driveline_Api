@@ -42,9 +42,9 @@ class App {
 
     initRoutes() {
         // Importar rotas
-        const usuarioRoutes = require('./routes/usuarioRoutes');
-        const empresaRoutes = require('./routes/empresaRoutes');
-        const veiculoRoutes = require('./routes/veiculoRoutes');
+    const usuarioRoutes = require('./routes/UsuarioRoutes');
+    const empresaRoutes = require('./routes/EmpresaRoutes');
+    const veiculoRoutes = require('./routes/VeiculoRoutes');
 
         // Usar rotas
         this.app.use('/usuarios', usuarioRoutes);
