@@ -9,7 +9,7 @@ class Usuario {
     }
 
     static initModel() {
-        return sequelize.define('Usuario', {
+        return db.define('Usuario', {
             id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
             nome: { type: DataTypes.STRING, allowNull: false },
             email: { type: DataTypes.STRING, allowNull: false, unique: true },

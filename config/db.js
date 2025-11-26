@@ -4,7 +4,7 @@ const { Sequelize } = require('sequelize');
 const sequelize = new Sequelize(
     'drivelinepit',     // nome do banco
     'root',             // usuário
-    '@rtG4to123',                 // senha - DEIXE VAZIO PARA WAMP
+    '',                 // senha - DEIXE VAZIO PARA WAMP
     {
         host: 'localhost',
         dialect: 'mysql',
