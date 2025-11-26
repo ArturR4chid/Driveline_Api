@@ -10,11 +10,11 @@ class UsuarioRoutes {
 
     setupRoutes() {
         this.router.get('/', (req, res) => UsuarioController.getAll(req, res));
-        this.router.get('/:id', (req, res) => UsuarioController.getById(req, res));
         this.router.post('/', (req, res) => UsuarioController.create(req, res));
+        this.router.post('/login', (req, res) => UsuarioController.login(req, res));
+        this.router.get('/:id', (req, res) => UsuarioController.getById(req, res));
         this.router.put('/:id', (req, res) => UsuarioController.update(req, res));
         this.router.delete('/:id', (req, res) => UsuarioController.delete(req, res));
-        this.router.post('/login', (req, res) => UsuarioController.login(req, res));
     }
 
     getRouter() {

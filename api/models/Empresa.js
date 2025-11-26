@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const db = require('../../config/db');
+const { sequelize } = require('../../config/db');
 
 class Empresa {
     constructor(nome, cnpj, endereco) {
@@ -9,11 +9,24 @@ class Empresa {
     }
 
     static initModel() {
-        return db.define('Empresa', {
+        return sequelize.define('Empresa', {
             id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-            nome: { type: DataTypes.STRING, allowNull: false },
-            cnpj: { type: DataTypes.STRING, allowNull: false },
-            endereco: { type: DataTypes.STRING, allowNull: false }
+            razao_social: { type: DataTypes.STRING, allowNull: false },
+            nome_fantasia: { type: DataTypes.STRING },
+            cnpj: { type: DataTypes.STRING, allowNull: false, unique: true },
+            email: { type: DataTypes.STRING },
+            telefone: { type: DataTypes.STRING },
+            rua: { type: DataTypes.STRING },
+            numero: { type: DataTypes.STRING },
+            bairro: { type: DataTypes.STRING },
+            cidade: { type: DataTypes.STRING },
+            estado: { type: DataTypes.STRING(2) },
+            cep: { type: DataTypes.STRING }
+        }, {
+            tableName: 'empresas',
+            timestamps: true,
+            createdAt: 'created_at',
+            updatedAt: 'updated_at'
         });
     }
 
@@ -25,8 +38,24 @@ class Empresa {
         return await this.getModel().findAll();
     }
 
+    static async findById(id) {
+        return await this.getModel().findByPk(id);
+    }
+
     static async create(data) {
         return await this.getModel().create(data);
+    }
+
+    static async update(id, data) {
+        const empresa = await this.getModel().findByPk(id);
+        if (empresa) {
+            return await empresa.update(data);
+        }
+        return null;
+    }
+
+    static async delete(id) {
+        return await this.getModel().destroy({ where: { id } });
     }
 }
 

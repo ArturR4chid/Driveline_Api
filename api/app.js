@@ -23,7 +23,7 @@ class App {
     constructor() {
         this.app = express();
         this.port = 3000;
-        this.host = '0.0.0.0';
+        this.host = '192.168.100.201'; // ✅ SEU IP CORRETO
         this.initMiddlewares();
         this.initRoutes();
         this.initDatabase();
@@ -42,9 +42,9 @@ class App {
 
     initRoutes() {
         // Importar rotas
-        const usuarioRoutes = require('./routes/usuarioRoutes');
-        const empresaRoutes = require('./routes/empresaRoutes');
-        const veiculoRoutes = require('./routes/veiculoRoutes');
+        const usuarioRoutes = require('../api/routes/UsuarioRoutes');
+        const empresaRoutes = require('../api/routes/EmpresaRoutes');
+        const veiculoRoutes = require('../api/routes/VeiculoRoutes');
 
         // Usar rotas
         this.app.use('/usuarios', usuarioRoutes);
@@ -158,10 +158,11 @@ class App {
             console.log('🚀 DRIVELINE PIT API INICIADA COM SUCESSO!');
             console.log('=' .repeat(50));
             console.log(`📍 Local: http://localhost:${this.port}`);
-            console.log(`🌐 Rede: http://10.0.2.2:${this.port} (Android)`);
-            console.log(`❤️ Saúde: http://localhost:${this.port}/health`);
-            console.log(`📚 Documentação: http://localhost:${this.port}/`);
-            console.log(`🧪 Teste: http://localhost:${this.port}/test`);
+            console.log(`🌐 Rede: http://${this.host}:${this.port}`); // ✅ SEU IP AQUI
+            console.log(`📱 Flutter: http://${this.host}:${this.port}`); // ✅ URL PARA FLUTTER
+            console.log(`❤️ Saúde: http://${this.host}:${this.port}/health`);
+            console.log(`📚 Documentação: http://${this.host}:${this.port}/`);
+            console.log(`🧪 Teste: http://${this.host}:${this.port}/test`);
             console.log('=' .repeat(50));
         });
     }
